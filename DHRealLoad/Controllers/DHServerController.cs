@@ -21,7 +21,7 @@ namespace DHRealLoad.Controllers
         private static IntPtr realLoadID = IntPtr.Zero;
         private static fDisConnectCallBack disConnectCallBack = new fDisConnectCallBack(DisConnectCallBack);
         private static fHaveReConnectCallBack haveReConnectCallBack = new fHaveReConnectCallBack(ReConnectCallBack);
-        private static fAnalyzerDataCallBack analyzerDataCallBack = new fAnalyzerDataCallBack(AnalyzerDataCallBack);
+        //private static fAnalyzerDataCallBack analyzerDataCallBack = new fAnalyzerDataCallBack(AnalyzerDataCallBack);
         private static NET_DEVICEINFO_Ex device;
 
         private readonly ILogger<DHServerController> _logger;
@@ -96,8 +96,8 @@ namespace DHRealLoad.Controllers
         {
             if (realLoadID == IntPtr.Zero)
             {
-               // fAnalyzerDataCallBack cb=new fAnalyzerDataCallBack((IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved) => AnalyzerDataCallBack(IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved, ICapPublisher publisher));
-                realLoadID = NETClient.RealLoadPicture(loginID, 0, (uint)EM_EVENT_IVS_TYPE.ALL, true, analyzerDataCallBack, IntPtr.Zero, IntPtr.Zero);
+               fAnalyzerDataCallBack cb=new fAnalyzerDataCallBack((IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved) => AnalyzerDataCallBack(lAnalyzerHandle, dwEventType, pEventInfo, pBuffer, dwBufSize, dwUser, nSequence, reserved, this.publisher));
+                realLoadID = NETClient.RealLoadPicture(loginID, 0, (uint)EM_EVENT_IVS_TYPE.ALL, true, cb, IntPtr.Zero, IntPtr.Zero);
             }
             else
             {
@@ -125,8 +125,7 @@ namespace DHRealLoad.Controllers
         {
             NETClient.Cleanup();
         }
-        private static int AnalyzerDataCallBack(IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved)
-            //, ICapPublisher publisher)
+        private static int AnalyzerDataCallBack(IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved,ICapPublisher publisher)
         {
             DHServer dhs = new DHServer();
             dhs.nDVRType = device.nDVRType;
