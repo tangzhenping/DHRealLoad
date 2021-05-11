@@ -96,6 +96,7 @@ namespace DHRealLoad.Controllers
         {
             if (realLoadID == IntPtr.Zero)
             {
+               // fAnalyzerDataCallBack cb=new fAnalyzerDataCallBack((IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved) => AnalyzerDataCallBack(IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved, ICapPublisher publisher));
                 realLoadID = NETClient.RealLoadPicture(loginID, 0, (uint)EM_EVENT_IVS_TYPE.ALL, true, analyzerDataCallBack, IntPtr.Zero, IntPtr.Zero);
             }
             else
@@ -125,6 +126,7 @@ namespace DHRealLoad.Controllers
             NETClient.Cleanup();
         }
         private static int AnalyzerDataCallBack(IntPtr lAnalyzerHandle, uint dwEventType, IntPtr pEventInfo, IntPtr pBuffer, uint dwBufSize, IntPtr dwUser, int nSequence, IntPtr reserved)
+            //, ICapPublisher publisher)
         {
             DHServer dhs = new DHServer();
             dhs.nDVRType = device.nDVRType;
@@ -353,7 +355,7 @@ namespace DHRealLoad.Controllers
                 default:
                     break;
             }
-            //_capPublisher.PublishAsync("DHServer", dhs);
+           // publisher.PublishAsync("DHServer", dhs);
             return 1;
         }
         internal static void WriteFile(byte[] bytes, string path, int length)
